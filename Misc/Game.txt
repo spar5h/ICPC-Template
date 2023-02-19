@@ -1,0 +1,4 @@
+grundy number of a state is the mex of the grundy numbers of states it can reach
+
+for multiple games, take xor of their grundy numbers -> if 0 then losing, else winning
+
