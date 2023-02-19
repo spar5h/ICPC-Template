@@ -1,0 +1,9 @@
+
+modular inverse of x = modExp(x, mod - 2, mod)
+
+m0 = 1e9 + 7; 
+m1 = 1e9 + 9;
+
+polynomial rolling hash: use m0/m1 and p as small prime (31, 53)
+
+hashing unordered sets: map values to random numbers modulo m0/m1, take sum

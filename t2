@@ -1,0 +1,101 @@
+    int n, l;
+    ArrayList<Integer>[] adj;
+
+    int timer;
+    int[] tin, tout;
+    int[][] up;
+
+    void dfs(int x, int p) {
+        tin[x] = ++timer;
+        up[x][0] = p;
+        for (int i = 1; i <= l; i++)
+            up[x][i] = up[up[x][i - 1]][i - 1];
+
+        for (int y : adj[x]) {
+            if (y != p)
+                dfs(y, x);
+        }
+
+        tout[x] = ++timer;
+    }
+
+    boolean is_ancestor(int u, int v) {
+        return tin[u] <= tin[v] && tout[u] >= tout[v];
+    }
+
+    int lca(int u, int v) {
+        if (is_ancestor(u, v))
+            return u;
+        if (is_ancestor(v, u))
+            return v;
+        for (int i = l; i >= 0; i--) {
+            if (!is_ancestor(up[u][i], v))
+                u = up[u][i];
+        }
+        return up[u][0];
+    }
+
+    void preprocess(int root) {
+        l = (int)ceil(log(n) / log(2));
+        adj = new ArrayList[n];
+        for (int i = 0; i < n; i++)
+            adj[i] = new ArrayList<>();
+        timer = 0;
+        tin = new int[n];
+        tout = new int[n];
+        up = new int[n][l + 1];
+        dfs(root, root);
+    }
+
+    class Pair {
+        int u, v;
+        Pair (int u, int v) {
+            this.u = u;
+            this.v = v;
+        }
+    }
+
+    int[] dp;
+    void dfs2(int x, int p) {
+        for (int y : adj[x]) {
+            if (y != p) {
+                dfs2(y, x);
+                dp[x] += dp[y];
+            }
+        }
+    }
+
+    public void solve(FastReader s, PrintWriter w) {
+        n = s.nextInt();
+        preprocess(0);
+
+        Pair[] edge = new Pair[n - 1];
+        for(int i = 0; i < n - 1; i++) {
+            int u = s.nextInt() - 1, v = s.nextInt() - 1;
+            edge[i] = new Pair(u, v);
+            adj[u].add(v);
+            adj[v].add(u);
+        }
+
+        dp = new int[n];
+        int q = s.nextInt();
+        while(q-- > 0) {
+            int u = s.nextInt() - 1, v = s.nextInt() - 1;
+            dp[u]++;
+            dp[v]++;
+            dp[lca(u, v)] -= 2;
+            w.println((u + 1) + " " + (v + 1) + " " + (lca(u, v) + 1));
+        }
+
+        dfs2(0, 0);
+        for (int i = 0; i < n; i++)
+        w
+
+        for(int i = 0; i < n - 1; i++)
+            if (is_ancestor(edge[i].u, edge[i].v))
+                w.print(dp[edge[i].v] + " ");
+            else
+                w.print(dp[edge[i].u] + " ");
+
+        w.println();
+    }
